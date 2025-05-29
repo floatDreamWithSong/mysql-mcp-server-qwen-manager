@@ -29,7 +29,6 @@ export function createPaginatedResult(results, pageSize = DEFAULT_PAGE_SIZE, ses
   });
 
   const firstPageData = results.slice(0, pageSize);
-  
   return {
     data: firstPageData,
     pagination: {
@@ -48,7 +47,7 @@ export function getNextPage(sessionId = 'default') {
   const state = paginationStates.get(sessionId);
   
   if (!state) {
-    throw new Error('没有找到分页状态，请先执行查询');
+    throw new Error(`没有找到分页状态，请先执行查询${Object.keys(paginationStates)}`);
   }
 
   if (state.currentPage >= state.totalPages) {

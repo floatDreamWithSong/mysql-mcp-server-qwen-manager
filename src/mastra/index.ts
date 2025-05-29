@@ -8,7 +8,7 @@ export const mastra = new Mastra({
   agents: { MySQLAgent },
   storage: new LibSQLStore({
     // stores telemetry, evals, ... into memory storage, if it needs to persist, change to file:../mastra.db
-    url: "file:../mastra.db",
+    url: "file:../../mastra.db",
   }),
   logger: new PinoLogger({
     name: 'Mastra',

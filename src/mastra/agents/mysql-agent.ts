@@ -12,7 +12,7 @@ export const MySQLAgent = new Agent({
   tools: await mcp.getTools(),
   memory: new Memory({
     storage: new LibSQLStore({
-      url: 'file:../mastra.db', // path is relative to the .mastra/output directory
+      url: 'file:../../mastra-mysql-agent.db', // path is relative to the .mastra/output directory
     }),
     options:{
       lastMessages:10,
