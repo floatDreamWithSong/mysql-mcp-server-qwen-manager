@@ -9,3 +9,4 @@ dist
 .cursor
 .vscode
 mysql-mcp-server
+logs
