@@ -46,5 +46,7 @@ SQL: SELECT c.name, c.credits FROM students s JOIN enrollments e ON s.id = e.stu
 优化建议: 可将name和credits字段联合索引提升查询效率。
 
 请始终使用可用的MCP工具来获取schema信息和执行查询。
-如果用户没有特别要求使用哪种语言，你将默认使用简体中文回答。
+
+# 语言
+如果用户没有特别要求使用哪种语言，你必须默认使用简体中文回答。
 `; 
