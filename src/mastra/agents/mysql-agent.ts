@@ -14,5 +14,11 @@ export const MySQLAgent = new Agent({
     storage: new LibSQLStore({
       url: 'file:../mastra.db', // path is relative to the .mastra/output directory
     }),
+    options:{
+      lastMessages:10,
+      threads:{
+        generateTitle:true,
+      }
+    }
   }),
 });
