@@ -2,7 +2,7 @@
 
 ## 附件
 
-[实验报告.md](/实验报告.md)
+[实验报告.md](./实验报告.md)
 
 ## 项目概述
 
@@ -107,23 +107,29 @@ npm install
 npm run dev
 ```
 
+![启动开发服务器](./assets/start-dev.png)
+
 启动后，在浏览器中打开Web界面，地址为 `http://localhost:4111`
+
+![](./assets/select-agent.png)
+![](./assets/exec-query.png)
 
 MCP服务器通过stdio输出，因此其并不会影响其它进程的MCP服务
 
-如果你想要手动启动MCP：
-
-```bash
-# 启动MySQL MCP服务器
-npm run mcp
-```
-
-服务器启动后会显示：
-```
-MySQL MCP服务器（增强版）准备启动...
-数据库: xxx, 用户: xxx
-支持功能: 安全查询、分页显示、日志记录、表结构获取
-```
+> 如果你想要手动启动MCP：
+> 
+> ```bash
+> # 启动MySQL MCP服务器
+> npm run mcp
+> ```
+> 
+> 服务器启动后会显示：
+> 
+> ```
+> MySQL MCP服务器（增强版）准备启动...
+> 数据库: xxx, 用户: xxx
+> 支持功能: 安全查询、分页显示、日志记录、表结构获取
+> ```
 
 ### 3. 使用系统
 
