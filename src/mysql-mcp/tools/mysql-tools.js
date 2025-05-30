@@ -13,7 +13,7 @@ import {
 } from '../utils/pagination.js';
 
 // 安全执行查询函数
-async function safeExecuteQuery(query, params = [], sessionId = 'default', enablePagination = true, pageSize = 20) {
+async function safeExecuteQuery(query, params, sessionId, enablePagination, pageSize) {
   // 安全验证
   const validation = validateSQL(query);
   if (!validation.valid) {
@@ -25,6 +25,9 @@ async function safeExecuteQuery(query, params = [], sessionId = 'default', enabl
   try {
     const result = await executeQuery(query, params);
     logQuery(query, params, result);
+    if(enablePagination === undefined) {
+      enablePagination = result.length > pageSize * 2;
+    }
     // 如果启用分页且结果是数组
     if (enablePagination && Array.isArray(result)) {
       return createPaginatedResult(result, pageSize, sessionId);
@@ -44,23 +47,22 @@ export const mysqlQueryTool = createTool({
   inputSchema: z.object({
     query: z.string().describe('SQL查询语句'),
     params: z.array(z.string()).optional().describe('查询参数数组'),
-    sessionId: z.string().describe('会话ID，用于分页状态管理，最好是传入一个6位长度的数字，例如123456'),
-    enablePagination: z.boolean().optional().describe('是否启用分页'),
-    pageSize: z.number().optional().describe('每页显示条数（最大100）')
+    sessionId: z.string().describe('会话ID，用于分页状态管理，最好是传入一个6位长度的数字并记住，例如123456'),
+    enablePagination: z.boolean().optional().describe('是否启用分页，默认会自动根据查询结果自动判断是否启用分页'),
+    pageSize: z.number().optional().describe('每页显示条数（最大100），默认10')
   }),
   execute: async ({ context }) => {
     const { 
       query, 
       params = [], 
       sessionId = 'default',
-      enablePagination = true,
-      pageSize = 20
+      enablePagination = undefined,
+      pageSize = 10
     } = context;
 
     if (!query) {
       throw new Error('缺少查询语句');
     }
-
     return await safeExecuteQuery(query, params, sessionId, enablePagination, pageSize);
   }
 });
