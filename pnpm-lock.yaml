@@ -35,9 +35,6 @@ importers:
       qwen-ai-provider:
         specifier: ^0.1.0
         version: 0.1.0(zod@3.25.36)
-      sqlstring:
-        specifier: ^2.3.3
-        version: 2.3.3
       zod:
         specifier: ^3.25.36
         version: 3.25.36

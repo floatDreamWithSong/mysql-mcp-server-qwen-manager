@@ -10,7 +10,7 @@ import {
 
 // 创建MCP服务器
 const server = new MCPServer({
-  name: 'MySQL MCP服务器（增强版）',
+  name: 'MySQL MCP Server',
   version: '2.0.0',
   description: '连接到MySQL数据库的高级工具集，支持安全查询、分页显示、日志记录等功能',
   tools: {
@@ -23,7 +23,7 @@ const server = new MCPServer({
 });
 
 // 启动服务器
-console.log(`MySQL MCP服务器（增强版）准备启动...`);
+console.log(`MySQL MCP Server准备启动...`);
 console.log(`数据库: ${config.database}, 用户: ${config.user}`);
 console.log(`支持功能: 安全查询、分页显示、日志记录、表结构获取`);
 
