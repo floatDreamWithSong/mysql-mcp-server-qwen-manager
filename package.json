@@ -5,7 +5,7 @@
   "description": "ECNU MCP Lab 06 - Turborepo多包架构",
   "author": "floatDreamer",
   "license": "ISC",
-  "packageManager": "pnpm@8.15.6",
+  "packageManager": "pnpm@9.5.0",
   "engines": {
     "node": ">=18"
   },
