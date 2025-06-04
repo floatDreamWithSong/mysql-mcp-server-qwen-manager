@@ -1,0 +1,42 @@
+{
+  "name": "express-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon",
+    "dev:tsx": "tsx src/server.ts",
+    "build": "swc src -d dist --config-file .swcrc",
+    "start": "node dist/server.js",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "catalog:prod",
+    "@mastra/core": "catalog:prod",
+    "@mastra/libsql": "catalog:prod",
+    "@mastra/loggers": "catalog:prod",
+    "@mastra/mcp": "catalog:prod",
+    "@mastra/memory": "catalog:prod",
+    "@mastra/server": "catalog:prod",
+    "cors": "catalog:prod",
+    "dotenv": "catalog:node",
+    "express": "catalog:backend",
+    "qwen-ai-provider": "catalog:prod",
+    "rxjs": "catalog:prod",
+    "zod": "catalog:utils"
+  },
+  "devDependencies": {
+    "@swc-node/register": "catalog:dev",
+    "@swc/cli": "catalog:dev",
+    "@swc/core": "catalog:dev",
+    "@types/cors": "catalog:types",
+    "@types/express": "catalog:types",
+    "@types/node": "catalog:types",
+    "@typescript-eslint/eslint-plugin": "catalog:types",
+    "@typescript-eslint/parser": "catalog:types",
+    "eslint": "catalog:lint",
+    "nodemon": "catalog:dev",
+    "tsx": "^4.19.4",
+    "typescript": "catalog:dev"
+  }
+}
