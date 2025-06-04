@@ -22,7 +22,8 @@
     "express": "catalog:backend",
     "qwen-ai-provider": "catalog:prod",
     "rxjs": "catalog:prod",
-    "zod": "catalog:utils"
+    "zod": "catalog:utils",
+    "mysql-mcp": "workspace:*"
   },
   "devDependencies": {
     "@swc-node/register": "catalog:dev",
