@@ -199,13 +199,16 @@ const App: React.FC = () => {
             <div style={{ marginTop: '8px' }}>
               <strong>结果:</strong>
               {toolCall.result.content?.map((item: any, idx: number) => (
-                <div key={idx} style={{
+                <div key={idx} 
+                style={{
                   marginTop: '4px',
                   padding: '4px 8px',
+                  color:'black',
                   backgroundColor: toolCall.result.isError ? '#fff2f0' : '#f6ffed',
                   border: `1px solid ${toolCall.result.isError ? '#ffccc7' : '#b7eb8f'}`,
                   borderRadius: '4px'
-                }}>
+                }}
+                >
                   {item.text}
                 </div>
               ))}
