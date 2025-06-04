@@ -4,7 +4,9 @@ import { Observable } from "rxjs";
 import { tap, catchError } from "rxjs/operators";
 import { mastra } from "./mastra";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({
+  path: '../../.env'
+});
 
 const app = express();
 const port = process.env.PORT ?? 3001;
@@ -15,11 +17,18 @@ app.use(express.json());
 
 // 流式对话API - 集成Mastra服务
 app.get("/api/stream", async (req: express.Request, res: express.Response) => {
-  const { message } = req.query;
+  console.log('[API访问] /api/stream - 流式对话请求');
+  console.log('请求参数:', req.query);
+  const { message, tid } = req.query;
 
   if (!message) {
-    res.status(400).json({ error: "Missing 'message' in request body" });
+    console.log('错误: 缺少message参数');
+    res.status(400).json({ error: "Missing 'message' in request query" });
     return;
+  }
+  if(typeof tid !='string'){
+    res.status(400).json({ error: "wrong 'tid' in request query" });
+    return
   }
 
   try {
@@ -35,20 +44,57 @@ app.get("/api/stream", async (req: express.Request, res: express.Response) => {
     const agent = mastra.getAgent("MySQLAgent");
 
     const result = await agent.stream(message as string, {
+      resourceId: "user",
+      threadId: tid || 'default',
       toolChoice: "required",
-      onStepFinish: (stepResult: any) => {
+      onStepFinish: (stepResult: {
+        toolCalls: Array<{
+          type: "tool-call";
+          toolCallId: string;
+          toolName: string;
+          args: {
+            detailed: boolean;
+          };
+        }>;
+        toolResults: Array<{
+          type: "tool-result";
+          toolCallId: string;
+          toolName: string;
+          args: {
+            detailed: boolean;
+          };
+          result: {
+            content: Array<{
+              type: "text";
+              text: string;
+            }>;
+            isError: boolean;
+          };
+        }>;
+      }) => {
         // 处理工具调用信息
         try {
           if (stepResult.toolCalls && stepResult.toolCalls.length > 0) {
             stepResult.toolCalls.forEach((toolCall: any) => {
               console.log(toolCall);
+              
+              // 通过 toolCallId 找到对应的结果
+              const toolResult = stepResult.toolResults?.find(
+                (result: any) => result.toolCallId === toolCall.toolCallId
+              );
+              
               const toolInfo = {
                 type: "tool_call",
+                toolCallId: toolCall.toolCallId,
                 functionName: toolCall.toolName,
                 arguments: toolCall.args,
-                result: toolCall.result,
-                timestamp: new Date().toISOString(),
+                result: toolResult ? {
+                  content: toolResult.result.content,
+                  isError: toolResult.result.isError
+                } : null,
+                timestamp: new Date().toISOString()
               };
+              console.log('处理的工具调用信息:', toolInfo);
               res.write(JSON.stringify(toolInfo) + "\n");
             });
           }
@@ -89,7 +135,7 @@ app.get("/api/stream", async (req: express.Request, res: express.Response) => {
             type: "error",
             error: error instanceof Error ? error.message : String(error),
             timestamp: new Date().toISOString(),
-            };
+          };
           res.write(JSON.stringify(errorData) + "\n");
           throw error;
         }),
@@ -99,7 +145,7 @@ app.get("/api/stream", async (req: express.Request, res: express.Response) => {
           const endData = {
             type: "end",
             timestamp: new Date().toISOString(),
-            };
+          };
           res.write(JSON.stringify(endData) + "\n");
           res.end();
         },
@@ -120,6 +166,7 @@ app.get("/api/stream", async (req: express.Request, res: express.Response) => {
 
 // 健康检查接口
 app.get("/api/health", (req: express.Request, res: express.Response) => {
+  console.log('[API访问] /api/health - 健康检查请求');
   res.json({
     status: "healthy",
     timestamp: new Date().toISOString(),
@@ -129,15 +176,17 @@ app.get("/api/health", (req: express.Request, res: express.Response) => {
 
 // 获取可用的代理信息
 app.get("/api/agents", (req: express.Request, res: express.Response) => {
+  console.log('[API访问] /api/agents - 获取代理列表请求');
   try {
     // 使用 Object.keys 来获取代理名称
     const agentNames = ["MySQLAgent"]; // 硬编码已知的代理名称
+    console.log('返回代理列表:', agentNames);
     res.json({
       agents: agentNames,
       count: agentNames.length,
     });
   } catch (error) {
-    console.error("Error loading agents:", error);
+    console.error('获取代理列表失败:', error);
     res.status(500).json({
       error: "Failed to load agents",
       message: error instanceof Error ? error.message : String(error),

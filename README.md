@@ -1,158 +1,171 @@
-# 基于MCP与QWEN大模型的自然语言MySQL数据库查询系统
+# MCP Lab 06 - Mastra MySQL Agent 对话系统
 
-## 附件
+一个智能数据库查询对话系统，支持流式响应和工具调用可视化。
 
-[实验报告.md](./实验报告.md)
+## ✨ 项目特性
 
-## 项目概述
+- 🤖 **智能 MySQL Agent**
+- 💬 **流式对话**
+- 🔧 **工具调用可视化**
+- 🏗️ **Monorepo 架构**
+- 🔄 **MCP 集成**
+- 📱 **现代化 UI**
 
-本项目是实现了一个基于Model Context Protocol (MCP) 和大语言模型的自然语言到SQL查询转换系统。用户可以通过自然语言描述查询需求，系统自动生成并执行对应的SQL语句，返回查询结果。
-
-### 主要功能
-
-- 🔍 **自然语言转SQL**: 支持通过自然语言描述生成精确的SQL查询
-- 🛡️ **安全控制**: 只允许SELECT查询，过滤敏感字段
-- 📝 **查询日志**: 记录所有查询操作和时间戳
-- 📄 **分页支持**: 长查询结果支持分页展示
-- 🗄️ **表结构管理**: 动态获取和过滤数据库schema
-- 🤖 **智能优化**: 提供SQL优化建议和多轮对话支持
-
-## 项目目录结构
+## 📁 项目结构
 
 ```
 mcp-lab-06/
-├── src/
-│   ├── mysql-mcp/              # MCP服务器实现
-│   │   ├── index.js           # MCP服务器主入口
-│   │   ├── config/
-│   │   │   └── database.js    # 数据库连接配置
-│   │   ├── tools/
-│   │   │   └── mysql-tools.js # MySQL工具集实现
-│   │   └── utils/             # 工具函数
-│   └── mastra/                # 大模型交互框架
-│       ├── index.ts           # Mastra主入口
-│       ├── agents/
-│       │   └── mysql-agent.ts # MySQL Agent，MCP和大模型的交互集成处
-│       ├── model/
-│       │   └── index.ts       # 模型配置
-│       ├── prompts/
-│       │   └── mysql-agent-prompt.ts # Prompt模板
-│       ├── mcp/               # MCP客户端配置
-│       └── utils/             # 工具函数
-├── logs/                      # 查询日志存储
-├── .mastra/                   # Mastra中间文件输出
-├── package.json              # 项目依赖配置
-├── pnpm-lock.yaml            # 依赖锁定文件
-├── .gitignore                # Git忽略配置
-├── README.md                 # 项目说明文档
-└── 实验报告.md               # 实验报告
+├── apps/
+│   ├── express-server/          # Express 后端服务
+│   │   ├── src/
+│   │   │   ├── server.ts        # 主服务器文件
+│   │   │   └── mastra.ts        # Mastra 配置
+│   │   └── package.json
+│   └── vite-react/              # React 前端应用
+│       ├── src/
+│       │   ├── App.tsx          # 主应用组件
+│       │   └── main.tsx         # 应用入口
+│       └── package.json
+├── packages/
+│   └── mysql-mcp/               # MySQL MCP 包
+├── turbo.json                   # Turborepo 配置
+└── package.json                 # 根包配置
 ```
 
-## 环境要求
+## 🚀 快速开始
 
-- **Node.js**: >= 20.9.0
-- **数据库**: MySQL 5.7+ 或 MariaDB 10.3+
-- **包管理器**: pnpm (推荐) 或 npm
+### 环境要求
 
-## 配置说明
+- Node.js >= 18
+- pnpm >= 8.15.6
+- MySQL 数据库
 
-### 1. 环境变量配置
-
-创建 `.env` 文件（如果不存在）：
+### 1. 克隆项目
 
 ```bash
-# 通义千问API配置
-QWEN_API_KEY=your_qwen_api_key_here
+git clone <repository-url>
+cd mcp-lab-06
+```
 
-# MySQL数据库配置
+### 2. 安装依赖
+
+```bash
+pnpm install
+```
+
+### 3. 环境配置
+
+在根目录下创建 `.env` 文件：
+
+```env
+QWEN_API_KEY=sk-xxxxxxxxxxxxxxxxxx
+QWEN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+
+# 数据库配置
 DB_HOST=localhost
 DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=your_password
+DB_USER=user
+DB_PASSWORD=
 DB_NAME=college
 ```
 
-### 2. 数据库配置
+### 4. 启动服务
 
-确保你已经安装并配置了MySQL数据库，并创建了测试数据库（如college数据库）。
-
-修改 `src/mysql-mcp/config/database.js` 中的数据库连接配置：
-
-```javascript
-export const config = {
-  host: process.env.DB_HOST || "localhost",
-  port: process.env.DB_PORT || 3306,
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "college",
-};
-```
-
-## 安装与运行
-
-### 1. 安装依赖
-
+#### 方式一：同时启动前后端
 ```bash
-# 使用pnpm（推荐）
-pnpm install
-
-# 或使用npm
-npm install
+pnpm start
 ```
 
-### 2. 启动Mastra开发环境（终端2）
-
+#### 方式二：分别启动
 ```bash
-# 启动Mastra开发环境
-npm run dev
+# 启动后端服务 (端口 3001)
+pnpm start:backend
+
+# 启动前端服务 (端口 5173)
+pnpm start:frontend
 ```
 
-![启动开发服务器](./assets/start-dev.png)
+### 5. 访问应用
 
-启动后，在浏览器中打开Web界面，地址为 `http://localhost:4111`
+- 前端界面: http://localhost:5173
+- 后端API: http://localhost:3001
 
-![](./assets/select-agent.png)
-![](./assets/exec-query.png)
+![入口](./assets/welcome.png)
 
-MCP服务器通过stdio输出，因此其并不会影响其它进程的MCP服务
+![界面使用](./assets/chat.png)
 
-> 如果你想要手动启动MCP：
->
-> ```bash
-> # 启动MySQL MCP服务器
-> npm run mcp
-> ```
->
-> 服务器启动后会显示：
->
-> ```
-> MySQL MCP服务器（增强版）准备启动...
-> 数据库: xxx, 用户: xxx
-> 支持功能: 安全查询、分页显示、日志记录、表结构获取
-> ```
+## 🎯 功能特性
 
-### 3. 使用系统
+### 智能对话
+- **自然语言查询**: 用户可以用自然语言描述查询需求
+- **流式响应**: 实时显示 AI 生成的回复
+- **上下文记忆**: 支持对话上下文，刷新后丢失
 
-1. 在Web界面中选择 "MySQL Agent"
-2. 输入自然语言查询，例如：
-   - "列出所有课程的名称，按标题和学分排序"
-   - "查找计算机科学系的所有课程"
-   - "显示选修人数最多的前5门课程"
-3. 系统会自动生成SQL、执行查询并返回结果
+### 工具调用可视化
+- **思维链展示**: 使用 ThoughtChain 组件展示 Agent 思维过程
+- **工具调用详情**: 显示函数名、参数和执行结果
+- **状态反馈**: 实时展示工具调用状态（成功/失败）
 
-## 核心工具说明
+### 快速开始模板
+- **数据库结构查询**: "数据库里面有什么表和字段？"
+- **学生数据统计**: "帮我查询学生数量"  
+- **教师数据统计**: "一共有多少个老师？"
 
-### MCP工具集
+## 📡 API 文档
 
-- **mysqlQueryTool**: 执行SELECT查询，支持安全过滤
-- **mysqlSchemaTool**: 获取数据库表结构信息
-- **mysqlDdlTool**: 获取表的DDL语句
-- **paginationTool**: 分页查询支持
-- **queryLogTool**: 查询日志记录和查看
+### 流式对话 API
 
-### 安全特性
+```http
+GET /api/stream?message=<用户消息>
+```
 
-- 只允许SELECT查询语句
-- 过滤包含敏感字段的查询（password、salary等）
-- SQL注入防护机制
-- 白名单关键字验证
+**响应格式**: NDJSON (每行一个JSON对象)
+
+**响应类型**:
+```typescript
+// 文本流块
+{
+  "type": "text_chunk",
+  "content": "文本内容",
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+
+// 工具调用
+{
+  "type": "tool_call", 
+  "toolCallId": "call_123",
+  "functionName": "query_database",
+  "arguments": { "query": "SELECT * FROM users" },
+  "result": {
+    "content": [{ "type": "text", "text": "查询结果..." }],
+    "isError": false
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+
+// 错误信息
+{
+  "type": "error",
+  "error": "错误描述",
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+
+// 结束标记
+{
+  "type": "end",
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
+## 🐛 故障排除
+
+### 常见问题
+
+**Q: 数据库连接失败**
+A: 检查 `.env` 文件中的数据库配置是否正确。
+
+**Q: 端口占用**
+A: 修改 `.env` 文件中的 `PORT` 配置或停止占用端口的进程。
+
+**Q：发送后输出为空白**
+A：检查API_KEY是否有效

@@ -1,6 +1,8 @@
 import { createQwen } from "qwen-ai-provider";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({
+  path: '../../.env'
+});
 export const qwen = createQwen({
   apiKey: process.env.QWEN_API_KEY,
   baseURL:

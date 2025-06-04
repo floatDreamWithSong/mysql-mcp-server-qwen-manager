@@ -13,18 +13,22 @@
     "@ant-design/icons": "catalog:icons",
     "@ant-design/x": "catalog:frontend",
     "@tailwindcss/vite": "catalog:build",
+    "@types/markdown-it": "^14.1.2",
+    "@types/uuid": "^10.0.0",
     "antd": "catalog:prod",
     "antd-style": "catalog:prod",
     "axios": "catalog:network",
     "dayjs": "catalog:utils",
     "highlight.js": "catalog:syntax",
+    "markdown-it": "^14.1.0",
     "react": "catalog:prod",
     "react-dom": "catalog:prod",
     "react-markdown": "catalog:markdown",
     "rehype-highlight": "catalog:prod",
     "rehype-raw": "catalog:prod",
     "remark-gfm": "catalog:prod",
-    "tailwindcss": "catalog:style"
+    "tailwindcss": "catalog:style",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/react": "catalog:types",

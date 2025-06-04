@@ -5,19 +5,18 @@
   "description": "ECNU MCP Lab 06 - Turborepo多包架构",
   "author": "floatDreamer",
   "license": "ISC",
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@8.15.6",
   "engines": {
-    "node": ">=20.9.0",
-    "pnpm": ">=9.0.0"
+    "node": ">=18"
   },
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
     "start": "turbo dev --filter=vite-react --filter=express-server",
-    "start:all": "turbo dev",
-    "start:frontend": "turbo dev --filter=vite-react",
-    "start:backend": "turbo dev --filter=express-server",
-    "lint": "turbo lint",
+    "start:all": "concurrently \"cd apps/express-server && npm run dev\" \"cd apps/vite-react && npm run dev\"",
+    "start:frontend": "cd apps/vite-react && npm run dev",
+    "start:backend": "cd apps/express-server && npm run dev",
+    "lint": "turbo run lint",
     "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "dev:react": "turbo dev --filter=vite-react",
@@ -29,10 +28,8 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@types/node": "catalog:types",
-    "pncat": "catalog:cli",
-    "prettier": "catalog:lint",
-    "turbo": "catalog:monorepo",
-    "typescript": "catalog:dev"
+    "prettier": "^3.2.5",
+    "turbo": "^2.0.12",
+    "concurrently": "^8.2.2"
   }
 }
