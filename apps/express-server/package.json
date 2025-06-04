@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon",
-    "dev:tsx": "tsx src/server.ts",
     "build": "swc src -d dist --config-file .swcrc",
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts"
@@ -36,7 +35,6 @@
     "@typescript-eslint/parser": "catalog:types",
     "eslint": "catalog:lint",
     "nodemon": "catalog:dev",
-    "tsx": "^4.19.4",
     "typescript": "catalog:dev"
   }
 }
