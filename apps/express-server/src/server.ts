@@ -147,14 +147,10 @@ app.get("/api/agents", (req: express.Request, res: express.Response) => {
 
 app.listen(port, () => {
   console.log(`Express服务器已启动，端口: ${port}`);
-  console.log(`\n可用的API端点:`);
-  console.log(`- GET  /api/health - 健康检查`);
-  console.log(`- GET  /api/agents - 获取可用agent信息`);
-  console.log(`- GET  /api/stream - 流式对话接口`);
   console.log(`- 环境变量-数据库: ${process.env.DB_HOST}`);
   console.log(`- 环境变量-数据库: ${process.env.DB_PORT}`);
   console.log(`- 环境变量-数据库: ${process.env.DB_USER}`);
   console.log(`- 环境变量-数据库: ${process.env.DB_PASSWORD}`);
   console.log(`- 环境变量-数据库: ${process.env.DB_NAME}`);
-  console.log(`- QWEN 终端: ${process.env.QWEN_BASE_URL}`);
+  console.log(`- 前端界面: http://localhost:5173`)
 });
