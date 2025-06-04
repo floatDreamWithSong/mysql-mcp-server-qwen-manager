@@ -80,11 +80,11 @@ DB_NAME=college
 
 ```javascript
 export const config = {
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST || "localhost",
   port: process.env.DB_PORT || 3306,
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'college'
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "college",
 };
 ```
 
@@ -117,14 +117,14 @@ npm run dev
 MCP服务器通过stdio输出，因此其并不会影响其它进程的MCP服务
 
 > 如果你想要手动启动MCP：
-> 
+>
 > ```bash
 > # 启动MySQL MCP服务器
 > npm run mcp
 > ```
-> 
+>
 > 服务器启动后会显示：
-> 
+>
 > ```
 > MySQL MCP服务器（增强版）准备启动...
 > 数据库: xxx, 用户: xxx

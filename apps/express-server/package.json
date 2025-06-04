@@ -1,0 +1,37 @@
+{
+  "name": "express-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx --watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "express": "catalog:backend",
+    "cors": "catalog:prod",
+    "dotenv": "catalog:node",
+    "rxjs": "catalog:prod",
+    "@ai-sdk/openai": "catalog:prod",
+    "@mastra/core": "catalog:prod",
+    "@mastra/libsql": "catalog:prod",
+    "@mastra/loggers": "catalog:prod",
+    "@mastra/mcp": "catalog:prod",
+    "@mastra/memory": "catalog:prod",
+    "@mastra/server": "catalog:prod",
+    "qwen-ai-provider": "catalog:prod",
+    "zod": "catalog:utils"
+  },
+  "devDependencies": {
+    "@types/express": "catalog:types",
+    "@types/cors": "catalog:types",
+    "@types/node": "catalog:types",
+    "tsx": "catalog:script",
+    "typescript": "catalog:dev",
+    "eslint": "catalog:lint",
+    "@typescript-eslint/eslint-plugin": "catalog:types",
+    "@typescript-eslint/parser": "catalog:types"
+  }
+} 

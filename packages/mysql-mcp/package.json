@@ -1,0 +1,31 @@
+{
+  "name": "mysql-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/index.js",
+    "build": "node build.js",
+    "build:bundle": "esbuild src/index.js --bundle --platform=node --target=node20 --format=esm --outfile=dist/mysql-mcp.js --external:mysql2",
+    "build:standalone": "esbuild src/index.js --bundle --platform=node --target=node20 --format=cjs --outfile=dist/mysql-mcp.cjs",
+    "start": "node dist/mysql-mcp.js",
+    "start:standalone": "node dist/mysql-mcp.cjs",
+    "lint": "eslint src --ext .js"
+  },
+  "bin": {
+    "mysql-mcp": "./dist/mysql-mcp.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "catalog:prod",
+    "@mastra/mcp": "catalog:prod",
+    "@mastra/core": "catalog:prod",
+    "mysql2": "catalog:prod",
+    "dotenv": "catalog:node",
+    "zod": "catalog:utils"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:types",
+    "eslint": "catalog:lint",
+    "esbuild": "catalog:build"
+  }
+} 

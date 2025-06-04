@@ -1,42 +1,38 @@
 {
   "name": "mcp-lab-06",
   "version": "1.0.0",
-  "main": "index.js",
-  "types": "module",
-  "scripts": {
-    "dev": "mastra dev",
-    "mcp": "node src/mysql-mcp/index.js"
-  },
-  "keywords": [
-    "mcp",
-    "mysql",
-    "mcp-server",
-    "mcp-lab",
-    "ecnu",
-    "ecnu-mcp-lab-06"
-  ],
+  "private": true,
+  "description": "ECNU MCP Lab 06 - Turborepo多包架构",
   "author": "floatDreamer",
   "license": "ISC",
-  "description": "ECNU MCP Lab 06",
-  "type": "module",
+  "packageManager": "pnpm@9.0.0",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=20.9.0",
+    "pnpm": ">=9.0.0"
   },
-  "dependencies": {
-    "@ai-sdk/openai": "^1.3.22",
-    "@mastra/core": "^0.10.1",
-    "@mastra/libsql": "^0.10.0",
-    "@mastra/loggers": "^0.10.0",
-    "@mastra/mcp": "^0.10.1",
-    "@mastra/memory": "^0.10.1",
-    "dotenv": "^16.3.1",
-    "mysql2": "^3.6.1",
-    "qwen-ai-provider": "^0.1.0",
-    "zod": "^3.25.36"
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "start": "turbo dev --filter=vite-react --filter=express-server",
+    "start:all": "turbo dev",
+    "start:frontend": "turbo dev --filter=vite-react",
+    "start:backend": "turbo dev --filter=express-server",
+    "lint": "turbo lint",
+    "clean": "turbo clean",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "dev:react": "turbo dev --filter=vite-react",
+    "dev:server": "turbo dev --filter=express-server",
+    "dev:mcp": "turbo dev --filter=mysql-mcp"
   },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "devDependencies": {
-    "@types/node": "^22.15.24",
-    "mastra": "^0.10.1",
-    "typescript": "^5.8.3"
+    "@types/node": "catalog:types",
+    "pncat": "catalog:cli",
+    "prettier": "catalog:lint",
+    "turbo": "catalog:monorepo",
+    "typescript": "catalog:dev"
   }
 }

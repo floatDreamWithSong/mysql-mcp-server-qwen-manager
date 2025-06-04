@@ -10,3 +10,4 @@ dist
 .vscode
 mysql-mcp-server
 logs
+.turbo
