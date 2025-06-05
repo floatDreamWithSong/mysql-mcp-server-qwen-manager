@@ -1,38 +1,39 @@
-import React, { useState, useRef, useEffect } from "react"
-import { Bubble, Sender, ThoughtChain, Welcome } from '@ant-design/x';
-import { Button, Typography } from 'antd';
-import {
-  BulbOutlined,
-  MoreOutlined,
-} from '@ant-design/icons';
-import { Prompts } from '@ant-design/x';
-import type { BubbleProps, PromptsProps, ThoughtChainProps } from '@ant-design/x';
-import markdownit from 'markdown-it';
-import { v4 } from 'uuid';
-const initial_prompt_items: PromptsProps['items'] = [
+import React, { useState, useRef, useEffect } from "react";
+import { Bubble, Sender, ThoughtChain, Welcome } from "@ant-design/x";
+import { Button, Typography } from "antd";
+import { BulbOutlined, MoreOutlined } from "@ant-design/icons";
+import { Prompts } from "@ant-design/x";
+import type {
+  BubbleProps,
+  PromptsProps,
+  ThoughtChainProps,
+} from "@ant-design/x";
+import markdownit from "markdown-it";
+import { v4 } from "uuid";
+const initial_prompt_items: PromptsProps["items"] = [
   {
-    key: '1',
-    icon: <BulbOutlined style={{ color: '#FFD700' }} />,
-    label: '数据库结构',
-    description: '数据库里面有什么？',
+    key: "1",
+    icon: <BulbOutlined style={{ color: "#FFD700" }} />,
+    label: "数据库结构",
+    description: "数据库里面有什么？",
   },
   {
-    key: '2',
-    icon: <BulbOutlined style={{ color: '#1890ff' }} />,
-    label: '查询学生数据',
-    description: '帮我查询学生数量',
+    key: "2",
+    icon: <BulbOutlined style={{ color: "#1890ff" }} />,
+    label: "查询学生数据",
+    description: "帮我查询学生数量",
   },
   {
-    key: '3',
-    icon: <BulbOutlined style={{ color: '#52c41a' }} />,
-    label: '老师统计',
-    description: '一共有多少个老师？',
-  }
+    key: "3",
+    icon: <BulbOutlined style={{ color: "#52c41a" }} />,
+    label: "老师统计",
+    description: "一共有多少个老师？",
+  },
 ];
 
 const md = markdownit({ html: true, breaks: true });
-const renderMarkdown: BubbleProps['messageRender'] = (content) => {
-  console.log('content', content);
+const renderMarkdown: BubbleProps["messageRender"] = (content) => {
+  console.log("content", content);
   return (
     <Typography>
       {/* biome-ignore lint/security/noDangerouslySetInnerHtml: used in demo */}
@@ -45,9 +46,9 @@ async function createStreamFromAPI(message: string, tid: string) {
   const apiUrl = `http://localhost:3001/api/stream?message=${encodeURIComponent(message)}&tid=${encodeURIComponent(tid)}`;
 
   const response = await fetch(apiUrl, {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Accept': 'application/x-ndjson',
+      Accept: "application/x-ndjson",
     },
   });
   if (!response.ok) {
@@ -57,7 +58,7 @@ async function createStreamFromAPI(message: string, tid: string) {
 }
 
 interface StreamChunk {
-  type: 'text_chunk' | 'tool_call' | 'error' | 'end';
+  type: "text_chunk" | "tool_call" | "error" | "end";
   content?: string;
   toolCallId?: string;
   functionName?: string;
@@ -72,42 +73,46 @@ interface StreamChunk {
 
 const App: React.FC = () => {
   const chatBoxRef = useRef<HTMLDivElement>(null);
-  const [conversation, setConversation] = useState<{
-    role: 'user' | 'assistant';
-    type: 'text' | 'function_call';
-    content: string;
-    toolCalls?: any[];
-  }[]>([]);
+  const [conversation, setConversation] = useState<
+    {
+      role: "user" | "assistant";
+      type: "text" | "function_call";
+      content: string;
+      toolCalls?: any[];
+    }[]
+  >([]);
 
-  const [status, setStatus] = useState<'idle' | 'requesting' | 'responsing'>('idle');
-  const [streamingContent, setStreamingContent] = useState<string>('');
+  const [status, setStatus] = useState<"idle" | "requesting" | "responsing">(
+    "idle",
+  );
+  const [streamingContent, setStreamingContent] = useState<string>("");
   const [currentToolCalls, setCurrentToolCalls] = useState<any[]>([]);
 
   const sendMessage = (message: string) => {
-    if (status !== 'idle') {
+    if (status !== "idle") {
       return;
     }
 
-    setStreamingContent('');
+    setStreamingContent("");
     setCurrentToolCalls([]);
-    setStatus('requesting');
-    readStream(message)
+    setStatus("requesting");
+    readStream(message);
   };
-  const tid = useRef(v4())
+  const tid = useRef(v4());
   async function readStream(message: string) {
     try {
       const readableStream = await createStreamFromAPI(message, tid.current);
       if (!readableStream) {
-        throw new Error('无法获取流式响应');
+        throw new Error("无法获取流式响应");
       }
-      let accumulatedContent = '';
+      let accumulatedContent = "";
       let toolCalls: any[] = [];
 
       // 手动处理NDJSON流
       const reader = readableStream.getReader();
       const decoder = new TextDecoder();
-      let buffer = '';
-      setStatus('responsing')
+      let buffer = "";
+      setStatus("responsing");
 
       while (true) {
         const { done, value } = await reader.read();
@@ -118,96 +123,106 @@ const App: React.FC = () => {
         buffer += decoder.decode(value, { stream: true });
 
         // 按行分割处理
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || ''; // 保留最后一个不完整的行
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || ""; // 保留最后一个不完整的行
 
         for (const line of lines) {
           if (line.trim()) {
             try {
               const data: StreamChunk = JSON.parse(line.trim());
-              console.log('收到流式数据:', data);
+              console.log("收到流式数据:", data);
 
               switch (data.type) {
-                case 'text_chunk':
+                case "text_chunk":
                   if (data.content) {
                     accumulatedContent += data.content;
                     setStreamingContent(accumulatedContent);
                   }
                   break;
 
-                case 'tool_call':
+                case "tool_call":
                   const toolCallInfo = {
                     id: data.toolCallId,
                     functionName: data.functionName,
                     arguments: data.arguments,
                     result: data.result,
-                    timestamp: data.timestamp
+                    timestamp: data.timestamp,
                   };
                   toolCalls.push(toolCallInfo);
                   setCurrentToolCalls([...toolCalls]);
                   break;
 
-                case 'error':
-                  console.error('流式响应错误:', data.error);
+                case "error":
+                  console.error("流式响应错误:", data.error);
                   break;
 
-                case 'end':
-                  console.log('流式响应结束');
+                case "end":
+                  console.log("流式响应结束");
                   break;
               }
             } catch (parseError) {
-              console.error('解析流式数据失败:', parseError, 'Raw line:', line);
+              console.error("解析流式数据失败:", parseError, "Raw line:", line);
             }
           }
         }
       }
 
       // 流结束后，将最终内容添加到对话中
-      setConversation(prev => [...prev, {
-        role: 'assistant',
-        type: toolCalls.length > 0 ? 'function_call' : 'text',
-        content: accumulatedContent,
-        toolCalls: toolCalls
-      }]);
+      setConversation((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          type: toolCalls.length > 0 ? "function_call" : "text",
+          content: accumulatedContent,
+          toolCalls: toolCalls,
+        },
+      ]);
 
       // 清理临时状态
-      setStreamingContent('');
+      setStreamingContent("");
       setCurrentToolCalls([]);
-
     } catch (error) {
-      console.error('流式请求失败:', error);
-      setConversation(prev => [...prev, {
-        role: 'assistant',
-        type: 'text',
-        content: `请求失败: ${error instanceof Error ? error.message : String(error)}`
-      }]);
-      setStreamingContent('');
+      console.error("流式请求失败:", error);
+      setConversation((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          type: "text",
+          content: `请求失败: ${error instanceof Error ? error.message : String(error)}`,
+        },
+      ]);
+      setStreamingContent("");
       setCurrentToolCalls([]);
     } finally {
-      setStatus('idle');
+      setStatus("idle");
     }
   }
 
   // 生成工具调用显示项目
-  const generateToolItems = (toolCalls: any[]): ThoughtChainProps['items'] => {
+  const generateToolItems = (toolCalls: any[]): ThoughtChainProps["items"] => {
     return toolCalls.map((toolCall, _) => ({
       title: `🔧 ${toolCall.functionName}`,
       description: (
         <div>
-          <div><strong>参数:</strong> {JSON.stringify(toolCall.arguments, null, 2)}</div>
+          <div>
+            <strong>参数:</strong> {JSON.stringify(toolCall.arguments, null, 2)}
+          </div>
           {toolCall.result && (
-            <div style={{ marginTop: '8px' }}>
+            <div style={{ marginTop: "8px" }}>
               <strong>结果:</strong>
               {toolCall.result.content?.map((item: any, idx: number) => (
-                <div key={idx} 
-                style={{
-                  marginTop: '4px',
-                  padding: '4px 8px',
-                  color:'black',
-                  backgroundColor: toolCall.result.isError ? '#fff2f0' : '#f6ffed',
-                  border: `1px solid ${toolCall.result.isError ? '#ffccc7' : '#b7eb8f'}`,
-                  borderRadius: '4px'
-                }}
+                <div
+                  key={idx}
+                  style={{
+                    marginTop: "4px",
+                    padding: "4px 8px",
+                    color: "black",
+                    backgroundColor: toolCall.result.isError
+                      ? "#fff2f0"
+                      : "#f6ffed",
+                    border: `1px solid ${toolCall.result.isError ? "#ffccc7" : "#b7eb8f"}`,
+                    borderRadius: "4px",
+                  }}
                 >
                   {item.text}
                 </div>
@@ -234,10 +249,7 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      <div
-        className="chat-box"
-        ref={chatBoxRef}
-      >
+      <div className="chat-box" ref={chatBoxRef}>
         {conversation.length === 0 ? (
           <Welcome
             icon="https://pngpai.com/pai_img/sml/2fa90860-d700-4c83-856f-b3ba898f4b95.png"
@@ -251,15 +263,19 @@ const App: React.FC = () => {
             <Bubble
               className="mt-5"
               content={item.content}
-              placement={item.role === 'user' ? 'end' : 'start'}
-              messageRender={item.role === 'assistant' ? renderMarkdown : undefined}
+              placement={item.role === "user" ? "end" : "start"}
+              messageRender={
+                item.role === "assistant" ? renderMarkdown : undefined
+              }
             />
-            {item.role === 'assistant' && item.toolCalls && item.toolCalls.length > 0 && (
-              <ThoughtChain
-                className="mt-3"
-                items={generateToolItems(item.toolCalls)}
-              />
-            )}
+            {item.role === "assistant" &&
+              item.toolCalls &&
+              item.toolCalls.length > 0 && (
+                <ThoughtChain
+                  className="mt-3"
+                  items={generateToolItems(item.toolCalls)}
+                />
+              )}
           </div>
         ))}
 
@@ -275,12 +291,8 @@ const App: React.FC = () => {
 
         {
           /** loading占位 */
-          status === 'requesting' && (
-            <Bubble
-              className="mt-5"
-              placement="start"
-              loading
-            />
+          status === "requesting" && (
+            <Bubble className="mt-5" placement="start" loading />
           )
         }
 
@@ -293,7 +305,10 @@ const App: React.FC = () => {
         )}
       </div>
 
-      <div className="input-container" style={{ padding: '20px', borderTop: '1px solid #f0f0f0' }}>
+      <div
+        className="input-container"
+        style={{ padding: "20px", borderTop: "1px solid #f0f0f0" }}
+      >
         {conversation.length === 0 && (
           <Prompts
             title="✨ 快速开始？"
@@ -301,17 +316,23 @@ const App: React.FC = () => {
             className="mb-4"
             onItemClick={(info) => {
               const prompts = {
-                '1': '数据库里面有什么表和字段？',
-                '2': '帮我查询学生数量',
-                '3': '一共有多少个老师？'
+                "1": "数据库里面有什么表和字段？",
+                "2": "帮我查询学生数量",
+                "3": "一共有多少个老师？",
               };
-              const message = prompts[info.data.key as keyof typeof prompts] || String(info.data.description) || '';
+              const message =
+                prompts[info.data.key as keyof typeof prompts] ||
+                String(info.data.description) ||
+                "";
               if (message) {
-                setConversation(prev => [...prev, {
-                  content: message,
-                  role: 'user',
-                  type: "text"
-                }]);
+                setConversation((prev) => [
+                  ...prev,
+                  {
+                    content: message,
+                    role: "user",
+                    type: "text",
+                  },
+                ]);
                 sendMessage(message);
               }
             }}
@@ -320,13 +341,16 @@ const App: React.FC = () => {
         <Sender
           submitType="shiftEnter"
           placeholder="按 Shift + Enter 发送消息"
-          loading={status !== 'idle'}
+          loading={status !== "idle"}
           onSubmit={(message: string) => {
-            setConversation(prev => [...prev, {
-              content: message,
-              role: 'user',
-              type: "text"
-            }]);
+            setConversation((prev) => [
+              ...prev,
+              {
+                content: message,
+                role: "user",
+                type: "text",
+              },
+            ]);
             sendMessage(message);
           }}
         />

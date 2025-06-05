@@ -72,11 +72,13 @@ DB_NAME=college
 ### 4. 启动服务
 
 #### 方式一：同时启动前后端
+
 ```bash
 pnpm start
 ```
 
 #### 方式二：分别启动
+
 ```bash
 # 启动后端服务 (端口 3001)
 pnpm start:backend
@@ -97,18 +99,21 @@ pnpm start:frontend
 ## 🎯 功能特性
 
 ### 智能对话
+
 - **自然语言查询**: 用户可以用自然语言描述查询需求
 - **流式响应**: 实时显示 AI 生成的回复
 - **上下文记忆**: 支持对话上下文，刷新后丢失
 
 ### 工具调用可视化
+
 - **思维链展示**: 使用 ThoughtChain 组件展示 Agent 思维过程
 - **工具调用详情**: 显示函数名、参数和执行结果
 - **状态反馈**: 实时展示工具调用状态（成功/失败）
 
 ### 快速开始模板
+
 - **数据库结构查询**: "数据库里面有什么表和字段？"
-- **学生数据统计**: "帮我查询学生数量"  
+- **学生数据统计**: "帮我查询学生数量"
 - **教师数据统计**: "一共有多少个老师？"
 
 ## 📡 API 文档
@@ -122,6 +127,7 @@ GET /api/stream?message=<用户消息>
 **响应格式**: NDJSON (每行一个JSON对象)
 
 **响应类型**:
+
 ```typescript
 // 文本流块
 {
@@ -132,7 +138,7 @@ GET /api/stream?message=<用户消息>
 
 // 工具调用
 {
-  "type": "tool_call", 
+  "type": "tool_call",
   "toolCallId": "call_123",
   "functionName": "query_database",
   "arguments": { "query": "SELECT * FROM users" },

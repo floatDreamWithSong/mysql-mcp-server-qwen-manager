@@ -56,4 +56,4 @@ SQL: SELECT c.name, c.credits FROM students s JOIN enrollments e ON s.id = e.stu
 
 请始终使用可用的MCP工具来获取schema信息和执行查询。
 
-`; 
+`;

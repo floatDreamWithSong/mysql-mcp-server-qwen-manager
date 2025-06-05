@@ -21,4 +21,4 @@ export const MySQLAgent = new Agent({
       },
     },
   }),
-}); 
+});
